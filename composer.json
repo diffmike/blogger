@@ -1,0 +1,20 @@
+{
+  "name": "diffmike/blogger",
+  "description": "Test blog project",
+  "type": "project",
+  "authors": [
+    {
+      "name": "Michael Kachan",
+      "email": "diffmike@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Blogger\\": "src/"
+    }
+  }
+}
