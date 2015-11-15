@@ -1,5 +1,25 @@
 <?php
 
-$config = include_once '../src/config.php';
+// root directory
+define('ROOT', dirname(__DIR__) . DIRECTORY_SEPARATOR);
 
-print_r($config);
+// application (source) directory
+define('APP', ROOT . 'app' . DIRECTORY_SEPARATOR);
+
+// composer autoload
+if (file_exists(ROOT . 'vendor/autoload.php')) {
+    require ROOT . 'vendor/autoload.php';
+}
+
+// load config
+require APP . 'config.php';
+
+// load helpers
+require APP . 'libraries/helper.php';
+
+// load application and controller
+require APP . 'core/Application.php';
+// require APP . 'core/Controller.php';
+
+// start the application
+$app = new Application();
