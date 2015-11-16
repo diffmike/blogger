@@ -1,100 +1,64 @@
 <?php
-
 namespace app\model;
 
-class Post extends \app\core\Model 
+use app\core\Model;
+
+class Post extends Model
 {
     /**
-     * Get all songs from database
+     * Posts table
+     * @var string
      */
-    public function getAllSongs()
-    {
-        $sql = "SELECT id, artist, track, link FROM song";
-        $query = $this->db->prepare($sql);
-        $query->execute();
-        return $query->fetchAll();
-    }
-    
+    protected $table = 'posts';
+
     /**
-     * Add a song to database
-     * TODO put this explanation into readme and remove it from here
-     * Please note that it's not necessary to "clean" our input in any way. With PDO all input is escaped properly
-     * automatically. We also don't use strip_tags() etc. here so we keep the input 100% original (so it's possible
-     * to save HTML and JS to the database, which is a valid use case). Data will only be cleaned when putting it out
-     * in the views (see the views for more info).
-     * @param string $artist Artist
-     * @param string $track Track
-     * @param string $link Link
+     * Add a post to database
+     * @param string $title
+     * @param int $isActive
+     * @param string $author
+     * @param string $content
+     * @param string$publishDate
      */
-    public function addSong($artist, $track, $link)
+    public function addPost($title, $isActive, $author, $content, $publishDate)
     {
-        $sql = "INSERT INTO song (artist, track, link) VALUES (:artist, :track, :link)";
+        $sql = "INSERT INTO posts (title, is_active, author, content, published_at)
+                VALUES (:title, :is_active, :author, :content, :published_at)";
         $query = $this->db->prepare($sql);
-        $parameters = array(':artist' => $artist, ':track' => $track, ':link' => $link);
-        // useful for debugging: you can see the SQL behind above construction by using:
-        // echo '[ PDO DEBUG ]: ' . Helper::debugPDO($sql, $parameters);  exit();
-        $query->execute($parameters);
+        $parameters = array(':title' => $title, ':is_active' => $isActive, ':author' => $author,
+                            ':content' => $content, ':published_at' => $publishDate);
+        return $query->execute($parameters);
     }
+
     /**
-     * Delete a song in the database
-     * Please note: this is just an example! In a real application you would not simply let everybody
-     * add/update/delete stuff!
-     * @param int $song_id Id of song
+     * Update a post in database
+     * @param int $id
+     * @param string $title
+     * @param int $isActive
+     * @param string $author
+     * @param string $content
+     * @param string$publishDate
      */
-    public function deleteSong($song_id)
+    public function updatePost($id, $title, $isActive, $author, $content, $publishDate)
     {
-        $sql = "DELETE FROM song WHERE id = :song_id";
+        $sql = "UPDATE posts
+                SET title = :title, is_active = :is_active, author = :author, content = :content, published_at = :published_at
+                WHERE {$this->idField} = :id";
         $query = $this->db->prepare($sql);
-        $parameters = array(':song_id' => $song_id);
-        // useful for debugging: you can see the SQL behind above construction by using:
-        // echo '[ PDO DEBUG ]: ' . Helper::debugPDO($sql, $parameters);  exit();
-        $query->execute($parameters);
+        $parameters = array(':title' => $title, ':is_active' => $isActive, ':author' => $author,
+                            ':content' => $content, ':published_at' => $publishDate, ':id' => $id);
+        return $query->execute($parameters);
     }
+
     /**
-     * Get a song from database
+     * Delete a post from database
+     * @param int $id
      */
-    public function getSong($song_id)
+    public function deletePost($id)
     {
-        $sql = "SELECT id, artist, track, link FROM song WHERE id = :song_id LIMIT 1";
+        $sql = "DELETE FROM posts WHERE {$this->idField} = :id";
         $query = $this->db->prepare($sql);
-        $parameters = array(':song_id' => $song_id);
-        // useful for debugging: you can see the SQL behind above construction by using:
-        // echo '[ PDO DEBUG ]: ' . Helper::debugPDO($sql, $parameters);  exit();
-        $query->execute($parameters);
-        // fetch() is the PDO method that get exactly one result
-        return $query->fetch();
+        $parameters = array(':id' => $id);
+        return $query->execute($parameters);
     }
-    /**
-     * Update a song in database
-     * // TODO put this explaination into readme and remove it from here
-     * Please note that it's not necessary to "clean" our input in any way. With PDO all input is escaped properly
-     * automatically. We also don't use strip_tags() etc. here so we keep the input 100% original (so it's possible
-     * to save HTML and JS to the database, which is a valid use case). Data will only be cleaned when putting it out
-     * in the views (see the views for more info).
-     * @param string $artist Artist
-     * @param string $track Track
-     * @param string $link Link
-     * @param int $song_id Id
-     */
-    public function updateSong($artist, $track, $link, $song_id)
-    {
-        $sql = "UPDATE song SET artist = :artist, track = :track, link = :link WHERE id = :song_id";
-        $query = $this->db->prepare($sql);
-        $parameters = array(':artist' => $artist, ':track' => $track, ':link' => $link, ':song_id' => $song_id);
-        // useful for debugging: you can see the SQL behind above construction by using:
-        // echo '[ PDO DEBUG ]: ' . Helper::debugPDO($sql, $parameters);  exit();
-        $query->execute($parameters);
-    }
-    /**
-     * Get simple "stats". This is just a simple demo to show
-     * how to use more than one model in a controller (see application/controller/songs.php for more)
-     */
-    public function getAmountOfSongs()
-    {
-        $sql = "SELECT COUNT(id) AS amount_of_songs FROM song";
-        $query = $this->db->prepare($sql);
-        $query->execute();
-        // fetch() is the PDO method that get exactly one result
-        return $query->fetch()->amount_of_songs;
-    }
+
 }

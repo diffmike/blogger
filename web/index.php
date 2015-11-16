@@ -19,7 +19,6 @@ require APP . 'libraries/helper.php';
 
 // load application and controller
 require APP . 'core/Application.php';
-// require APP . 'core/Controller.php';
 
 // start the application
 $app = new Application();
